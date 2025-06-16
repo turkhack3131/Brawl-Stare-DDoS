@@ -7,4 +7,4 @@ cd Brawl-Stare-DDoS
 
 ls
 
-python ddos.py --ip <target_ip> --port 9339 --duration 30 --threads 5
+python ddos.py --ip <target_ip> --port 9339 --duration 20 --threads 4
